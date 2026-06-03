@@ -1,0 +1,107 @@
+Idea 1: pick an orientation for the word and then place it within acceptable range by rng
+word: ace
+rng get orientation -> vertical
+rng get offset x in 0..5 -> 3
+rng get offset y in 0..2 -> 1
+rng reverse -> false
+_ _ _ _ _
+_ _ _ A _
+_ _ _ C _
+_ _ _ E _
+_ _ _ _ _
+
+Problem: Diagonal changes length based on offset
+
+Idea 2: if word is small enough to fit, try to place it several times 
+word: fight
+while attempts < 20
+  perform above algorithm
+  if fit: break
+  else attempts++
+
+can reduce safety checks
+
+Idea 3: Exhaustively define locations word will fit and pick one with rng
+can count up vertical and horizontal possibilities quickly using algebra and then treat them as a chunk for rng
+word: ace
+grid is 5x5
+length of word is 3, but in math we use 2 (grid of 1x1 still has room for 1)
+vertical = horizontal = (5-2)*5 = 15 starting positions
+* * * _ _
+* * * _ _
+* * * _ _
+* * * _ _
+* * * _ _
+vertical and horizontal each have two mirror symmetries
+will have to count vertical and horizontal seperately in case of non square grid
+diagonal = (5-2)*(5-2) = 9 staring positions
+* * * _ _
+* * * _ _ 
+* * * _ _ 
+_ _ _ _ _ 
+_ _ _ _ _
+diagonal has four symmetries, four rotations
+position 1:
+A _ _ _ _     _ _ _ _ A     E _ _ _ _    Note that backwards variants are 
+_ C _ _ _     _ _ _ C _     _ C _ _ _    also rotations of other positions
+_ _ E _ _     _ _ E _ _     _ _ A _ _ <- position 9, rotation 4
+_ _ _ _ _     _ _ _ _ _     _ _ _ _ _
+_ _ _ _ _     _ _ _ _ _     _ _ _ _ _
+
+_ _ _ _ _     _ _ _ _ _
+_ _ _ _ _     _ _ _ _ _
+_ _ E _ _     _ _ E _ _
+_ C _ _ _     _ _ _ C _
+A _ _ _ _     _ _ _ _ A
+
+Total of 30 + 30 + 36 = 96 positions
+rng range 0..96 gives 66 -> diagonal placement
+7th diagonal placement, position 7, rotation 1
+_ _ _ _ _
+_ _ _ _ _
+A _ _ _ _
+_ C _ _ _
+_ _ E _ _
+rand of 28 gives vertical placement, position 14, mirrored
+_ _ _ E _
+_ _ _ C _
+_ _ _ A _
+_ _ _ _ _
+_ _ _ _ _
+
+Problem: Overlapping words
+intersections of words are desireable, but only sometimes possibilities
+A C E _ _
+_ _ _ _ _
+_ _ _ _ _
+_ _ _ _ _
+_ _ _ _ _
+
+next word: ARC
+vertical placements allowed:
+* _ _ * *          _ _ _ _ _
+* * * * *          _ _ _ _ _
+* * * * *  mirror  _ * _ * *
+_ _ _ _ _          * * * * *
+_ _ _ _ _          * * * * *
+13 and 13, but allowed positions vary when mirrored
+no longer a neat agebraic equivalent to determine # of placements
+
+Solution: as before brute force some number of times until either valid solution or time to give up
+
+Problem: will likely create minimal number of valid word intersections
+
+Idea 4:
+As above, but actually calculate all possible positions one by one instead of algebraically
+Can prefer positions with intersections of existing words if desired
+
+May run slower than brute force method
+Performance of brute force method slows as grid fills, but is capped by the counter
+
+This method would have consistent performance no matter how full grid is
+but sparse grids will perform worse overall
+
+On our 3 letter word into a 5x5 grid we check 96 possibilities always
+Memory cost of tracking each position: need to maintain list of valid position indices
+
+5 letter word into 10x10 grid: TBD
