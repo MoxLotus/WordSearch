@@ -1,4 +1,5 @@
 use clap::Parser;
+use rand::Rng;
 
 #[derive(Parser)]
 struct Args {
@@ -21,5 +22,22 @@ fn main() {
     let w = args.size.0;
     let h = args.size.1;
 
-    println!("Got {}x{}", w, h);
+    let grid: Vec<Vec<char>> = (0..h)
+        .map(|_| {
+            (0..w)
+                .map(|_| rand::thread_rng().gen_range(b'A'..=b'Z') as char)
+                .collect()
+        })
+        .collect();
+
+    //TODO: Add word placement logic here
+
+    for row in &grid {
+        for &ch in row {
+            print!("{}  ", ch);
+        }
+        println!();
+    }
+
+    //TODO: Print the list of words to find here
 }
