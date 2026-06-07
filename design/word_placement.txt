@@ -105,3 +105,19 @@ On our 3 letter word into a 5x5 grid we check 96 possibilities always
 Memory cost of tracking each position: need to maintain list of valid position indices
 
 5 letter word into 10x10 grid: TBD
+
+Final idea:
+Instead of searching all possible solutions and then picking one, pick a potential solution at random
+and then test it and subsequent positions as necessary until a valid placement is found.
+
+Performance:
+Worst case is an exhaustive search of all positions.
+This is unlikely as a wordsearch packed tightly enough to achieve it is so densely packed with words
+that finding them becomes almost trivially easy.
+
+Best case is quiteg good, with typical cases likely only checking a handful of positions.
+
+Drawback: interesting positions (intersections) are often overlooked.
+
+Middle-ground: try a percentage (perhaps 10%) of all possible placements at random and pick the best.
+Will require experimenting.
